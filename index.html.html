@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HÓA HỌC 12 - BÀI 16: ĐIỆN PHÂN</title>
+  <style>
+
+    :root {
+      --primary: #4F46E5;
+      --primary-dark: #3730A3;
+      --primary-light: #EEF2FF;
+      --sidebar-start: #483EA6;
+      --sidebar-end: #3B2F8F;
+      --accent-orange: #F97316;
+      --accent-orange-bg: #FFF7ED;
+      --accent-orange-border: #FB923C;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --bg-viewport: #F1F4F9;
+      --card-bg: #FFFFFF;
+      --success: #10B981;
+      --success-bg: #ECFDF5;
+      --danger: #EF4444;
+      --danger-bg: #FEF2F2;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { display: flex; height: 100vh; background-color: var(--bg-viewport); color: var(--text-main); overflow: hidden; user-select: none; font-size: 16px; line-height: 1.5; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+
+    /* SIDEBAR NAVIGATION */
+    aside {
+      width: 320px;
+      background: linear-gradient(180deg, var(--sidebar-start) 0%, var(--sidebar-end) 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+      z-index: 10;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding: 0 8px; }
+    .brand-icon { width: 48px; height: 48px; background: white; border-radius: 14px; display: grid; place-items: center; font-size: 26px; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.18); }
+    .brand-text h2 { font-size: 20px; font-weight: 900; letter-spacing: 0.5px; }
+    .brand-text p { font-size: 13.5px; opacity: 0.9; margin-top: 2px; }
+
+    .nav-menu { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    nav-item { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: var(--radius-md); font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; opacity: 0.88; border: 1px solid transparent; }
+    .nav-item:hover { background: rgba(255, 255, 255, 0.14); color: white; }
+    .nav-item.active { background: white; color: var(--primary); box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+
+    /* PRACTICE SUBMENU */
+    .practice-submenu { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; padding: 12px 10px; background: rgba(0, 0, 0, 0.15); border-radius: var(--radius-md); }
+    .part-block { display: flex; flex-direction: column; gap: 8px; }
+    .part-title-btn {
+      font-size: 13.5px; font-weight: 800; color: #C7D2FE; cursor: pointer; text-transform: uppercase;
+      padding: 4px 8px; border-radius: 6px; transition: 0.2s;
+    }
+    .part-title-btn:hover, .part-title-btn.active { color: white; background: rgba(255,255,255,0.12); }
+    .q-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .q-btn {
+      aspect-ratio: 1; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-sm); color: white; font-weight: 700; font-size: 13px; cursor: pointer;
+      display: grid; place-items: center; transition: all 0.15s;
+    }
+    .q-btn:hover { background: rgba(255, 255, 255, 0.25); }
+    .q-btn.active { background: var(--accent-orange); border-color: var(--accent-orange); color: white; font-weight: 900; }
+    .q-btn.answered { background: var(--success); border-color: var(--success); color: white; }
+
+    /* FOOTER CONTROLS */
+    .sidebar-footer { display: flex; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.15); }
+    .tool-btn {
+      flex: 1; padding: 10px; background: rgba(255,255,255,0.1); border: none; border-radius: var(--radius-sm);
+      color: white; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
+    }
+    .tool-btn:hover { background: rgba(255,255,255,0.22); }
+
+    /* MAIN VIEWPORT */
+    main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .view-section { display: none; height: 100%; padding: 24px 32px; flex-direction: column; overflow-y: auto; box-sizing: border-box; }
+    .view-section.active { display: flex; }
+
+    /* TAB 1: TRANG CHỦ */
+    .hero-card {
+      background: white; border-radius: var(--radius-lg); padding: 40px; box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: auto; max-width: 820px;
+    }
+    .hero-badge { display: inline-block; background: rgba(79, 70, 229, 0.1); color: var(--primary); font-weight: 800; font-size: 14px; padding: 6px 16px; border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.5px; }
+    .hero-title { font-size: 36px; font-weight: 900; color: #1E293B; margin-bottom: 16px; line-height: 1.25; word-break: break-word; }
+    .hero-desc { font-size: 18px; color: #475569; line-height: 1.65; max-width: 900px; margin: 0 auto 28px auto; font-weight: 500; word-break: break-word; }
+    .btn-start {
+      background: var(--primary); color: white; border: none; padding: 16px 40px; border-radius: var(--radius-md);
+      font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35); transition: 0.2s;
+    }
+    .btn-start:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+    /* TAB 2: SLIDES */
+    .slide-card { flex: 1; background: white; border-radius: var(--radius-lg); box-shadow: 0 6px 24px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; }
+    .slide-header { padding: 18px 28px; background: #F8FAFC; border-bottom: 1.5px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 16px; color: var(--text-muted); }
+    .slide-body { flex: 1; padding: 32px; overflow-y: auto; font-size: 18px; line-height: 1.68; color: #1E293B; word-break: break-word; overflow-wrap: break-word; }
+    .slide-body h3 { font-size: 30px; font-weight: 800; color: #1E293B; margin-bottom: 24px; }
+    .slide-body ul { list-style: none; display: flex; flex-direction: column; gap: 16px; font-size: 21px; line-height: 1.8; color: #334155; }
+    .slide-body li { position: relative; padding-left: 28px; }
+    .slide-body li::before { content: "•"; position: absolute; left: 8px; color: var(--primary); font-size: 28px; line-height: 1; top: -2px; }
+    .slide-footer { background: #F8FAFC; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E2E8F0; }
+    .btn-nav-slide { background: var(--primary); color: white; border: none; padding: 10px 24px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .btn-nav-slide:disabled { background: #CBD5E1; cursor: not-allowed; }
+
+    /* TAB 3: KEYWORDS - MASTER CONTAINER CARD */
+    .keywords-card {
+      flex: 1; background: white; border-radius: var(--radius-lg); box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .keywords-top-bar { background: var(--primary); color: white; padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px; }
+    .keywords-guide-bar {
+      background: #F8FAFC; padding: 12px 32px; border-bottom: 1px solid #E2E8F0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .guide-text { font-size: 15px; color: var(--text-muted); font-weight: 600; }
+    .btn-flip-all {
+      background: var(--primary-light); color: var(--primary-dark); border: 1.5px solid #C7D2FE;
+      padding: 7px 18px; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; transition: 0.2s;
+    }
+    .btn-flip-all:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .keywords-grid-container {
+      flex: 1; padding: 14px 16px; overflow-y: auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-content: start;
+    }
+
+    /* FLIP CARDS 3D - MAXIMIZED WIDTH & COMFORTABLE PADDING */
+    .flip-card {
+      background-color: transparent;
+      perspective: 1200px;
+      -webkit-perspective: 1200px;
+      height: 242px;
+      cursor: pointer;
+      border-radius: 16px;
+      user-select: none;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      border-radius: 16px;
+    }
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+
+    /* FRONT DESIGN */
+    .flip-card-front {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      padding: 14px 12px;
+      z-index: 2;
+      transform: rotateY(0deg);
+      -webkit-transform: rotateY(0deg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .flip-card:hover .flip-card-front {
+      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.16);
+    }
+    .kw-tag {
+      align-self: flex-start;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.5px;
+    }
+    .kw-icon { font-size: 38px; margin: 2px 0; }
+    .kw-title { font-size: 20px; font-weight: 800; color: #1E293B; margin-bottom: 12px; text-align: center; }
+    .kw-hint-btn {
+      background: #F1F5F9;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      transition: 0.2s;
+    }
+    .flip-card:hover .kw-hint-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* BACK DESIGN - OPTIMIZED WIDTH */
+    .flip-card-back {
+      background: linear-gradient(180deg, #FFFFFF 0%, #EEF2FF 100%);
+      border: 2px solid var(--primary);
+      padding: 10px 10px;
+      color: #0F172A;
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+      z-index: 1;
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.18);
+      box-sizing: border-box;
+    }
+    .kw-back-header { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 8px; text-align: center; }
+    .formula-box {
+      width: 100%;
+      background: rgba(79, 70, 229, 0.08);
+      border: 1.5px solid #C7D2FE;
+      border-radius: 8px;
+      padding: 5px 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      text-align: center;
+      box-sizing: border-box;
+      line-height: 1.42;
+      margin-bottom: 4px;
+    }
+    .kw-back-body { font-size: 16px; color: #334155; line-height: 1.6; text-align: left; overflow-y: auto; max-height: 160px; word-break: break-word; }
+    .kw-back-body b { color: var(--primary-dark); font-weight: 800; }
+    .kw-back-body sub, .kw-back-body sup { font-weight: 700; }
+    .kw-back-footer {
+      font-size: 11px;
+      font-weight: 700;
+      color: #6366F1;
+      margin-top: 2px;
+    }
+
+    /* PREVENT BLINK ON FLIP */
+    .flip-card.flipped .flip-card-front {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s 0.12s, visibility 0.2s 0.12s;
+    }
+    .flip-card.flipped .flip-card-back {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s 0.12s;
+    }
+    .flip-card:not(.flipped) .flip-card-front {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s 0.12s;
+    }
+    .flip-card:not(.flipped) .flip-card-back {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s 0.12s, visibility 0.2s 0.12s;
+    }
+
+    /* TAB 4: PRACTICE VIEW */
+    .quiz-container { flex: 1; background: white; border-radius: var(--radius-lg); box-shadow: 0 6px 24px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; }
+    .quiz-top-bar { padding: 18px 28px; background: #F8FAFC; border-bottom: 1.5px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px; color: var(--primary); }
+    .quiz-body { flex: 1; padding: 32px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
+
+    .q-title { font-size: 21px; font-weight: 800; color: #0F172A; line-height: 1.55; margin-bottom: 22px; word-break: break-word; overflow-wrap: break-word; }
+    .context-box { background: var(--primary-light); border-left: 5px solid var(--primary); padding: 16px 20px; border-radius: 8px; font-size: 18px; line-height: 1.6; color: #1E293B; margin-bottom: 20px; font-weight: 500; }
+
+    /* PART I OPTIONS GRID (2x2) */
+    .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .opt-card {
+      background: white; border: 2.5px solid #E2E8F0; border-radius: var(--radius-md); padding: 16px 20px;
+      display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.2s;
+    }
+    .opt-card:hover { border-color: var(--primary); background: var(--primary-light); }
+    .opt-card.correct { background: var(--success-bg); border-color: var(--success); }
+    .opt-card.correct .opt-badge { background: var(--success); color: white; }
+    .opt-card.wrong { background: var(--danger-bg); border-color: var(--danger); }
+    .opt-card.wrong .opt-badge { background: var(--danger); color: white; }
+    .opt-badge { width: 44px; height: 44px; border-radius: 50%; background: #F1F5F9; color: #475569; display: grid; place-items: center; font-weight: 900; font-size: 18px; flex-shrink: 0; }
+    .opt-text { font-size: 18px; font-weight: 600; color: #1E293B; line-height: 1.5; flex: 1; word-break: break-word; }
+
+    /* PART II TRUE/FALSE */
+    .tf-table { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+    .tf-row {
+      display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;
+      background: #F8FAFC; border: 2px solid #E2E8F0; border-radius: var(--radius-md); gap: 16px;
+    }
+    .tf-text { font-size: 17px; font-weight: 600; color: #1E293B; line-height: 1.55; flex: 1; word-break: break-word; }
+    .tf-actions { display: flex; gap: 12px; }
+    .btn-tf {
+      padding: 10px 22px; border: 2px solid #CBD5E1; border-radius: var(--radius-sm);
+      font-weight: 800; font-size: 16px; cursor: pointer; background: white; color: #475569; transition: 0.2s;
+    }
+    .btn-tf.active-correct { background: var(--success); border-color: var(--success); color: white; }
+    .btn-tf.active-wrong { background: var(--danger); border-color: var(--danger); color: white; }
+
+    /* PART III DIGIT INPUTS */
+    .digit-area { display: flex; align-items: center; gap: 20px; margin: 30px 0; justify-content: center; }
+    .digit-label { font-size: 22px; font-weight: 800; color: #1E293B; }
+    .otp-inputs { display: flex; gap: 12px; }
+    .digit-box {
+      width: 65px; height: 72px; border: 3px solid #CBD5E1; border-radius: 12px;
+      text-align: center; font-size: 34px; font-weight: 900; color: var(--primary-dark);
+      background: white; outline: none; transition: 0.2s;
+    }
+    .digit-box:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2); }
+    .btn-submit-digit {
+      background: var(--accent-orange); color: white; border: none; padding: 16px 36px;
+      border-radius: 12px; font-size: 18px; font-weight: 800; cursor: pointer; transition: 0.2s;
+    }
+    .btn-submit-digit:hover { background: #EA580C; transform: translateY(-1px); }
+
+    /* QUIZ NOTE - NO PIN LEAK */
+    .quiz-note { font-size: 14px; color: var(--text-muted); font-weight: 600; text-align: center; margin-top: 10px; font-style: italic; }
+    .result-alert { font-size: 20px; font-weight: 800; text-align: center; margin-top: 16px; display: none; }
+
+    .quiz-footer { background: #F8FAFC; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E2E8F0; }
+    .btn-quiz-ctrl { background: white; border: 1.5px solid #CBD5E1; padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px; color: #475569; cursor: pointer; transition: 0.2s; }
+    .btn-quiz-ctrl:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-quiz-ctrl.primary { background: var(--primary); color: white; border-color: var(--primary); }
+    .btn-quiz-ctrl.primary:hover { background: var(--primary-dark); }
+  
+
+    /* TAB 5: VÒNG QUAY MAY MẮN */
+    .wheel-card {
+      flex: 1; background: white; border-radius: var(--radius-lg); box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .wheel-top-bar {
+      background: var(--primary); color: white; padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px;
+    }
+    .wheel-layout {
+      flex: 1; display: flex; padding: 24px; gap: 24px; overflow-y: auto;
+    }
+    .wheel-left {
+      flex: 1.2; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #F8FAFC; border-radius: var(--radius-md); padding: 20px; border: 1.5px solid #E2E8F0;
+    }
+    .wheel-canvas-container {
+      position: relative; margin-bottom: 20px; width: 400px; height: 400px;
+    }
+    .wheel-pointer {
+      position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+      font-size: 28px; color: #EF4444; z-index: 10;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .btn-spin {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 58px; height: 58px; border-radius: 50%; border: 3px solid var(--primary);
+      background: white; color: #1E293B; font-size: 16px; font-weight: 900;
+      cursor: pointer; z-index: 12; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: 0.15s; outline: none; display: flex; align-items: center; justify-content: center;
+    }
+    .btn-spin:hover { background: #F1F5F9; transform: translate(-50%, -50%) scale(1.05); }
+    .btn-spin:active { transform: translate(-50%, -50%) scale(0.95); }
+    .btn-spin:disabled { opacity: 0.8; cursor: not-allowed; }
+    
+    .wheel-result {
+      font-size: 21px; font-weight: 800; color: var(--primary-dark); text-align: center;
+      padding: 10px 24px; border-radius: 20px; background: white; border: 1.5px solid #CBD5E1;
+      min-width: 250px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .wheel-result.spinning { color: var(--accent-orange); }
+    .wheel-result.stopped { background: var(--accent-orange-bg); border-color: var(--accent-orange); color: var(--accent-orange); animation: pop-up 0.3s ease-out; }
+    
+    @keyframes pop-up { 0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+    .wheel-right {
+      flex: 0.8; display: flex; flex-direction: column; padding: 20px; background: #F8FAFC; border-radius: var(--radius-md); border: 1.5px solid #E2E8F0; box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+    }
+    #wheelInput {
+      width: 100%; height: 180px; border: 2px solid #E2E8F0; border-radius: var(--radius-sm);
+      padding: 12px; font-size: 15px; font-weight: 600; color: #1E293B; outline: none;
+      resize: none; font-family: inherit; line-height: 1.5; margin-bottom: 16px;
+    }
+    #wheelInput:focus { border-color: var(--primary); }
+    
+    .btn-wheel-action-spin {
+      width: 100%; background: var(--accent-orange); color: white; border: none;
+      padding: 14px; border-radius: 12px; font-size: 18px; font-weight: 800;
+      cursor: pointer; margin-bottom: 12px; transition: 0.2s; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .btn-wheel-action-spin:hover { background: #EA580C; transform: translateY(-1px); }
+    .btn-wheel-action-spin:active { transform: translateY(0); }
+    .btn-wheel-action-spin:disabled { opacity: 0.6; cursor: not-allowed; }
+    
+    .btn-wheel-action-reset {
+      width: 100%; background: white; color: #334155; border: 2px solid #CBD5E1;
+      padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: 0.2s;
+    }
+    .btn-wheel-action-reset:hover { background: #F8FAFC; border-color: var(--primary); color: var(--primary); }
+    
+    .btn-wheel-action-update {
+      width: 100%; background: #4F46E5; color: white; border: none;
+      padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 700;
+      cursor: pointer; margin-bottom: 8px; transition: 0.2s; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+    }
+    .btn-wheel-action-update:hover { background: #4338CA; }
+    .btn-wheel-action-update:active { transform: translateY(0); }
+    
+    /* TAB 6: BÁO CÁO KẾT QUẢ */
+    .report-card {
+      flex: 1; background: white; border-radius: var(--radius-lg); box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .report-top-bar {
+      background: var(--primary); color: white; padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px;
+    }
+    .report-dashboard {
+      flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto;
+    }
+    .report-summary-row {
+      display: flex; gap: 20px; justify-content: space-between; align-items: stretch;
+    }
+    .summary-box {
+      background: #F8FAFC; border: 1.5px solid #E2E8F0; border-radius: var(--radius-md);
+      padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .summary-box.circular { width: 180px; flex-shrink: 0; }
+    .radial-progress-container {
+      width: 90px; height: 90px; border-radius: 50%; background: var(--primary-light);
+      display: grid; place-items: center; margin-bottom: 10px; border: 4px solid var(--primary);
+    }
+    .radial-progress {
+      font-size: 26px; font-weight: 900; color: var(--primary-dark);
+    }
+    .summary-label { font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+
+    .summary-stats-grid {
+      flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    }
+    .stat-card {
+      border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; justify-content: center;
+      border: 2px solid #E2E8F0; transition: 0.2s;
+    }
+    .stat-card.green { background: var(--success-bg); border-color: var(--success); color: var(--success); }
+    .stat-card.red { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+    .stat-card.gray { background: #F8FAFC; border-color: #CBD5E1; color: #475569; }
+    .stat-card.gold {
+      flex: 1.2; background: #FFFBEB; border-color: #FBBF24; color: #D97706; padding: 20px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .stat-num { font-size: 34px; font-weight: 900; margin-bottom: 4px; line-height: 1; }
+    .stat-label { font-size: 13px; font-weight: 700; opacity: 0.85; text-transform: uppercase; }
+
+    .grade-badge { font-size: 20px; font-weight: 900; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .grade-comment { font-size: 13.5px; font-weight: 600; line-height: 1.45; }
+
+    .report-details-container {
+      display: flex; gap: 24px;
+    }
+    .report-details-left { flex: 1.3; display: flex; flex-direction: column; gap: 16px; }
+    .report-details-right { flex: 0.7; background: #F8FAFC; border: 1.5px solid #E2E8F0; border-radius: var(--radius-md); padding: 18px; }
+    
+    .report-details-left h3, .report-details-right h3 { font-size: 16px; font-weight: 800; color: var(--primary-dark); margin-bottom: 12px; }
+
+    .report-part-block {
+      background: white; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 14px 16px;
+    }
+    .part-header-rep {
+      display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 800;
+      color: #1E293B; margin-bottom: 12px; border-bottom: 1px dashed #E2E8F0; padding-bottom: 8px;
+    }
+    .part-score { color: var(--primary); background: var(--primary-light); padding: 3px 10px; border-radius: 12px; font-size: 12px; }
+    
+    .grid-rep-items { display: flex; flex-wrap: wrap; gap: 8px; }
+    .rep-item-card {
+      width: 32px; height: 32px; border-radius: 6px; font-size: 12px; font-weight: 800;
+      display: grid; place-items: center; cursor: pointer; transition: 0.15s; border: 1.5px solid #E2E8F0;
+    }
+    .rep-item-card:hover { transform: scale(1.08); }
+    .rep-item-card.unanswered { background: #F8FAFC; color: #64748B; }
+    .rep-item-card.correct { background: var(--success-bg); border-color: var(--success); color: var(--success); }
+    .rep-item-card.wrong { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+    .rep-item-num { line-height: 1; }
+    .rep-item-status { font-size: 10px; margin-top: -2px; }
+
+    .rep-row-tf {
+      display: flex; align-items: center; justify-content: space-between; padding: 6px 12px;
+      border-radius: 6px; border: 1px solid #E2E8F0; cursor: pointer; transition: 0.15s; margin-bottom: 6px;
+    }
+    .rep-row-tf:hover { background: #F8FAFC; }
+    .rep-row-title { font-size: 13px; font-weight: 700; color: #475569; }
+    .rep-row-dots { display: flex; gap: 8px; }
+    .rep-sub-dot {
+      font-size: 11px; font-weight: 800; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px;
+    }
+    .rep-sub-dot.unanswered { background: #F1F5F9; color: #64748B; }
+    .rep-sub-dot.correct { background: var(--success-bg); color: var(--success); }
+    .rep-sub-dot.wrong { background: var(--danger-bg); color: var(--danger); }
+
+    /* Timeline in Report */
+    .timeline-rep { display: flex; flex-direction: column; gap: 16px; }
+    .timeline-item { display: flex; gap: 14px; }
+    .time-num {
+      width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: white;
+      display: grid; place-items: center; font-size: 12px; font-weight: 800; flex-shrink: 0;
+    }
+    .time-content h4 { font-size: 13.5px; font-weight: 800; color: #1E293B; margin-bottom: 2px; }
+    .time-content p { font-size: 12.5px; color: var(--text-muted); line-height: 1.4; }
+
+    .btn-reset-report {
+      background: white; border: 1.5px dashed #EF4444; color: #EF4444; padding: 10px 24px;
+      border-radius: 8px; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: 0.2s;
+    }
+    .btn-reset-report:hover { background: #FEF2F2; }
+
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR (TAB TRAI) -->
+  <aside>
+    <div class="brand">
+      <div class="brand-icon">⚗️</div>
+      <div class="brand-text">
+        <h2>HÓA HỌC 12</h2>
+        <p>Bài 16. Điện phân</p>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <div class="nav-item active" onclick="switchNav('home')">⌂ Trang chủ</div>
+      <div class="nav-item" onclick="switchNav('slides')">▣ Không gian bài học</div>
+      <div class="nav-item" onclick="switchNav('keywords')">◊ Hệ thống từ khóa</div>
+      <div class="nav-item" onclick="togglePracticeNav()">✓ Không gian luyện tập</div>
+      
+      <!-- PRACTICE SUBMENU INSIDE THE MENU (ALWAYS BETWEEN PRACTICE NAV AND WHEEL NAV) -->
+      <div class="practice-submenu" id="practiceSub" style="display:none; flex-direction: column; gap: 10px; padding: 10px; background: rgba(0, 0, 0, 0.05); border-radius: 8px;">
+        <div class="part-block">
+          <div class="part-title-btn active" id="part1Head" onclick="selectPart(1)">Phần I: Trắc nghiệm (18 câu)</div>
+          <div class="q-grid" id="gridPart1"></div>
+        </div>
+        <div class="part-block">
+          <div class="part-title-btn" id="part2Head" onclick="selectPart(2)">Phần II: Đúng / Sai (4 câu)</div>
+          <div class="q-grid" id="gridPart2" style="display:none;"></div>
+        </div>
+        <div class="part-block">
+          <div class="part-title-btn" id="part3Head" onclick="selectPart(3)">Phần III: Điền số (6 câu)</div>
+          <div class="q-grid" id="gridPart3" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="nav-item" onclick="switchNav('wheel')">🎡 Vòng quay may mắn</div>
+      <div class="nav-item" onclick="switchNav('report')">📊 Báo cáo kết quả</div>
+    </nav>
+
+    <!-- FOOTER TOOLS -->
+    <div class="sidebar-footer">
+      <button class="tool-btn" onclick="toggleSound()">🔔 Âm thanh</button>
+      <button class="tool-btn" onclick="toggleFullScreen()">⛶ Toàn màn hình</button>
+      <button class="tool-btn" onclick="openTeacherMode()">GV Giáo viên</button>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEWPORT -->
+  <main>
+
+    <!-- VIEW 1: TRANG CHỦ -->
+    <section id="viewHome" class="view-section active">
+      <div class="hero-card">
+        <span class="hero-badge">CHƯƠNG 5: PIN ĐIỆN VÀ ĐIỆN PHÂN • BÀI 16</span>
+        <h1 class="hero-title">BÀI 16: ĐIỆN PHÂN</h1>
+        <p class="hero-desc">Nắm vững bản chất quá trình điện phân nóng chảy và điện phân dung dịch. Khám phá quy tắc phóng điện tại các điện cực (Anode và Cathode), định luật Faraday tính khối lượng chất giải phóng tại điện cực, cùng các ứng dụng công nghiệp quan trọng như sản xuất nhôm, xút – clo, tinh chế và mạ điện kim loại.</p>
+        <button class="btn-start" onclick="switchNav('slides')">BẮT ĐẦU BÀI HỌC →</button>
+      </div>
+    </section>
+
+    <!-- VIEW 2: SLIDES -->
+    <section id="viewSlides" class="view-section">
+      <div class="slide-card">
+        <div class="slide-header">
+          <span id="slideCounterText">Slide 1 / 4</span>
+          <span>BÀI 16: ĐIỆN PHÂN</span>
+        </div>
+        <div class="slide-body" id="slideBody"></div>
+        <div class="slide-footer">
+          <button class="btn-nav-slide" id="btnPrevSlide" onclick="changeSlide(-1)">← Trước</button>
+          <div style="font-weight:700; color:var(--text-muted); width:150px; background:#E2E8F0; height:8px; border-radius:4px; overflow:hidden;">
+            <div id="slideProgress" style="background:var(--primary); height:100%; width:25%; transition:0.2s;"></div>
+          </div>
+          <button class="btn-nav-slide" id="btnNextSlide" onclick="changeSlide(1)">Tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: KEYWORDS - MASTER CONTAINER CARD -->
+    <section id="viewKeywords" class="view-section">
+      <div class="keywords-card">
+        <!-- Top Bar Header -->
+        <div class="keywords-top-bar">
+          <span>◊ HỆ THỐNG TỪ KHÓA – BÀI 16: ĐIỆN PHÂN</span>
+          <span style="background:rgba(255,255,255,0.25); font-size:13px; padding:4px 12px; border-radius:12px; font-weight:700;">9 Thẻ tương tác</span>
+        </div>
+
+        <!-- Guide & Action Bar -->
+        <div class="keywords-guide-bar">
+          <span class="guide-text">💡 Nhấp vào từng thẻ để lật xem định nghĩa, cấu tạo; hoặc bấm nút bên cạnh để lật đồng loạt:</span>
+          <button class="btn-flip-all" onclick="toggleFlipAll()">Lật tất cả / Đặt lại ↻</button>
+        </div>
+
+        <!-- 3x3 Grid Cards Container -->
+        <div class="keywords-grid-container">
+          <!-- Card 1 -->
+          <div class="flip-card" onclick="flipThisCard(this)">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <span class="kw-tag">Từ khóa 01</span>
+                <div class="kw-icon">⚡</div>
+                <div class="kw-title">Bản chất Điện Phân</div>
+                <div class="kw-hint-btn">↻ Xem định nghĩa</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="kw-back-header">⚡ ĐIỆN NĂNG → HOÁ NĂNG</div>
+                <div class="formula-box">Phản ứng Oxi hoá – Khử gượng ép</div>
+                <div class="kw-back-body">
+                  Quá trình oxi hoá – khử xảy ra tại các điện cực dưới tác dụng của dòng điện một chiều đi qua chất điện ly.
+                </div>
+                <div class="kw-back-footer">↺ Chạm để lật lại</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="flip-card" onclick="flipThisCard(this)">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <span class="kw-tag">Từ khóa 02</span>
+                <div class="kw-icon">➖</div>
+                <div class="kw-title">Cathode (Cực Âm)</div>
+                <div class="kw-hint-btn">↻ Xem quá trình</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="kw-back-header">➖ CATHODE (CỰC ÂM)</div>
+                <div class="formula-box">Mⁿ⁺ + ne → M (Quá trình KHỬ)</div>
+                <div class="kw-back-body">
+                  Hút cation. Tại Cathode xảy ra quá trình KHỬ cation kim loại yếu/trung bình (hoặc H₂O bị khử sinh H₂ và OH⁻).
+                </div>
+                <div class="kw-back-footer">↺ Chạm để lật lại</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="flip-card" onclick="flipThisCard(this)">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <span class="kw-tag">Từ khóa 03</span>
+                <div class="kw-icon">➕</div>
+                <div class="kw-title">Anode (Cực Dương)</div>
+                <div class="kw-hint-btn">↻ Xem quá trình</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="kw-back-header">➕ ANODE (CỰC DƯƠNG)</div>
+                <div class="formula-box">2X⁻ → X₂ + 2e (Quá trình OXI HOÁ)</div>
+                <div class="kw-back-body">
+                  Hút anion. Tại Anode xảy ra quá trình OXI HOÁ anion không chứa O (hoặc H₂O bị oxi hoá sinh O₂ và H⁺).
+                </div>
+                <div class="kw-back-footer">↺ Chạm để lật lại</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="flip-card" onclick="flipThisCard(this)">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <span class="kw-tag">Từ khóa 04</span>
+                <div class="kw-icon">🌋</div>
+                <div class="kw-title">Điện Phân Nóng Chảy</div>
+                <div class="kw-hint-btn">↻ Xem ứng dụng</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="kw-back-header">🌋 ĐIỆN PHÂN NÓNG CHẢY</div>
+                <div class="formula-box">2Al₂O₃ → 4Al + 3O₂ (Cryolite)</div>
+                <div class="kw-back-body">
+                  Điều chế kim loại mạnh (Na, K, Ca, Mg, Al). Sản xuất nhôm dùng cryolite Na₃AlF₆ hạ nhiệt độ chảy xuống 900 °C.
+                </div>
+                <div class="kw-back-footer">↺ Chạm để lật lại</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="flip-card" onclick="flipThisCard(this)">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <span class="kw-tag">Từ khóa 05</span>
+                <div class="kw-icon">💧</div>
+                <div class="kw-title">Điện Phân Dung Dịch</div>
+                <div class="kw-hint-btn">↻ Xem quy tắc</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="kw-back-header">💧 ĐIỆN PHÂN DUNG DỊCH</div>
+                <div class="formula-box">2CuSO₄ + 2H₂O → 2Cu + O₂ + 2H₂SO₄</div>
+                <div class="kw-back-body">
+                  Khử cation kim loại trung bình/yếu tại Cathode và oxi hoá anion không chứa O tại Anode. Cation K⁺..Al³⁺ không bị khử.
+                </div>
+                <div class="kw-back-footer">↺ Chạm để lật lại</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="flip-card" onclick="flipThisCard(this)">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <span class="kw-tag">Từ khóa 06</span>
+                <div class="kw-icon">🏭</div>
+                <div class="kw-title">Sản Xuất Xút – Clo</div>
+                <div class="kw-hint-btn">↻ Xem phản ứng</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="kw-back-header">🏭 ĐP DD NaCl CÓ MÀNG NGĂN</div>
+                <div class="formula-box">2NaCl + 2H₂O → 2NaOH + H₂ + Cl₂</div>
+                <div class="kw-back-body">
+                  Điện phân dung dịch NaCl có màng ngăn xốp để sản xuất NaOH, khí H₂ và khí Cl₂ trong công nghiệp.
+                </div>
+                <div class="kw-back-footer">↺ Chạm để lật lại</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 7 -->
+          <div class="flip-card" onclick="flipThisCard(this)">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <span class="kw-tag">Từ khóa 07</span>
+                <div class="kw-icon">📐</div>
+                <div class="kw-title">Định Luật Faraday</div>
+                <div class="kw-hint-btn">↻ Xem công thức</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="kw-back-header">📐 ĐỊNH LUẬT FARADAY</div>
+                <div class="formula-box">m = (A · I · t) / (F · n)</div>
+                <div class="kw-back-body">
+                  Khối lượng m giải phóng tỉ lệ với điện lượng Q = I · t. Hằng số Faraday F = 96500 C/mol, n_e = (I · t) / F.
+                </div>
+                <div class="kw-back-footer">↺ Chạm để lật lại</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 8 -->
+          <div class="flip-card" onclick="flipThisCard(this)">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <span class="kw-tag">Từ khóa 08</span>
+                <div class="kw-icon">🎨</div>
+                <div class="kw-title">Mạ Điện & Tinh Chế</div>
+                <div class="kw-hint-btn">↻ Xem ứng dụng</div>
+              </div>
+              <div class="flip-card-back">
+                <div class="kw-back-header">🎨 MẠ ĐIỆN & TINH CHẾ</div>
+                <div class="formula-box">Vật cần mạ nối vào CATHODE</div>
+                <div class="kw-back-body">
+                  Mạ vàng, bạc, niken chống gỉ. Tinh chế đồng đạt 99,99% làm dây dẫn điện trong kĩ thuật điện.
+                </div>
+                <div class="kw-back-footer">↺ Chạm để lật lại</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: PRACTICE -->
+    <section id="viewPractice" class="view-section">
+      <div class="quiz-container">
+        <div class="quiz-top-bar">
+          <span id="quizPartTitle">Phần I - Trắc nghiệm 4 lựa chọn</span>
+          <span id="quizIndexIndicator">Câu 1 / 18</span>
+        </div>
+        <div class="quiz-body" id="quizMainBody"></div>
+        <div class="quiz-footer">
+          <button class="btn-quiz-ctrl" onclick="navQuestion(-1)">← Câu Trước</button>
+          <button class="btn-quiz-ctrl" onclick="resetCurrentQuestion()">Làm lại câu này</button>
+          <button class="btn-quiz-ctrl" onclick="resetAllPractice()">Đặt lại toàn bộ ↻</button>
+          <button class="btn-quiz-ctrl primary" onclick="navQuestion(1)">Câu Tiếp →</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- VIEW 5: VÒNG QUAY MAY MẮN -->
+    <section id="viewWheel" class="view-section">
+      <div class="wheel-card">
+        <div class="wheel-top-bar">
+          <span>🎡 VÒNG QUAY MAY MẮN – BÀI HỌC TƯƠNG TÁC</span>
+          <span style="background:rgba(255,255,255,0.25); font-size:13px; padding:4px 12px; border-radius:12px; font-weight:700;">Động lực dạy học</span>
+        </div>
+        <div class="wheel-layout">
+          <div class="wheel-left">
+            <div class="wheel-canvas-container">
+              <div class="wheel-pointer">▼</div>
+              <canvas id="wheelCanvas" width="400" height="400"></canvas>
+              <button class="btn-spin" id="btnSpin" onclick="spinWheel()">GO</button>
+            </div>
+            <div class="wheel-result" id="wheelResult">Nhấp "QUAY" để bắt đầu!</div>
+          </div>
+          <div class="wheel-right">
+            <div style="border-left: 5px solid #10B981; padding-left: 12px; margin-bottom: 12px; text-align: left;">
+              <h3 style="font-size: 21px; font-weight: 800; color: #1E293B; margin: 0; line-height: 1.2;">Vòng Quay Gọi Tên Ngẫu Nhiên</h3>
+            </div>
+            <p style="font-size: 14.5px; color: #475569; margin: 6px 0 16px 0; font-weight: 600; text-align: left; line-height: 1.5;">Thêm/bớt tên học sinh trực tiếp tại đây, mỗi tên nằm trên một dòng riêng biệt:</p>
+            <textarea id="wheelInput" placeholder="Nhập danh sách học sinh..." oninput="updateWheelList(true)"></textarea>
+            <button class="btn-wheel-action-update" id="btnUpdateWheel" onclick="updateWheelList(false)">Cập nhật danh sách học sinh 🔄</button>
+            <button class="btn-wheel-action-spin" id="btnSpinRight" onclick="spinWheel()">QUAY NGAY! 🎯</button>
+            <button class="btn-wheel-action-reset" onclick="loadDefaultRewards()">Khôi phục danh sách mặc định 🔄</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 6: BÁO CÁO KẾT QUẢ -->
+    <section id="viewReport" class="view-section">
+      <div class="report-card">
+        <div class="report-top-bar">
+          <span>📊 BÁO CÁO KẾT QUẢ HỌC TẬP & LUYỆN TẬP</span>
+          <span style="background:rgba(255,255,255,0.25); font-size:13px; padding:4px 12px; border-radius:12px; font-weight:700;">Học tập cá nhân hóa</span>
+        </div>
+        <div class="report-dashboard">
+          <div class="report-summary-row">
+            <div class="summary-box circular">
+              <div class="radial-progress-container">
+                <div class="radial-progress" id="reportRadialProgress">0%</div>
+              </div>
+              <div class="summary-label">Đã Hoàn Thành</div>
+            </div>
+            <div class="summary-stats-grid">
+              <div class="stat-card green">
+                <div class="stat-num" id="statCorrect">0</div>
+                <div class="stat-label">Trả lời đúng</div>
+              </div>
+              <div class="stat-card red">
+                <div class="stat-num" id="statWrong">0</div>
+                <div class="stat-label">Trả lời chưa đúng</div>
+              </div>
+              <div class="stat-card gray">
+                <div class="stat-num" id="statUnanswered">40</div>
+                <div class="stat-label">Chưa làm bài</div>
+              </div>
+            </div>
+            <div class="stat-card gold">
+              <div class="grade-badge" id="reportGrade">KHỞI ĐỘNG</div>
+              <div class="grade-comment" id="reportComment">Hãy làm thử các bài luyện tập ở phần bên trái để kiểm tra và củng cố kiến thức nhé!</div>
+            </div>
+          </div>
+          <div class="report-details-container">
+            <div class="report-details-left">
+              <h3>🔍 CHI TIẾT THEO PHẦN</h3>
+              <div class="report-part-block">
+                <div class="part-header-rep">
+                  <span>Phần I: Trắc nghiệm 4 lựa chọn (18 câu)</span>
+                  <span class="part-score" id="scoreP1">0/18 câu đã làm</span>
+                </div>
+                <div class="grid-rep-items" id="gridRepP1"></div>
+              </div>
+              <div class="report-part-block">
+                <div class="part-header-rep">
+                  <span>Phần II: Trắc nghiệm Đúng / Sai (4 câu - 16 mệnh đề)</span>
+                  <span class="part-score" id="scoreP2">0/16 mệnh đề đúng</span>
+                </div>
+                <div class="grid-rep-items" id="gridRepP2"></div>
+              </div>
+              <div class="report-part-block">
+                <div class="part-header-rep">
+                  <span>Phần III: Trả lời ngắn điền số (6 câu)</span>
+                  <span class="part-score" id="scoreP3">0/6 câu đã làm</span>
+                </div>
+                <div class="grid-rep-items" id="gridRepP3"></div>
+              </div>
+            </div>
+            <div class="report-details-right">
+              <h3>📝 QUY TRÌNH HỌC TẬP KHUYÊN DÙNG</h3>
+              <div class="timeline-rep">
+                <div class="timeline-item">
+                  <div class="time-num">1</div>
+                  <div class="time-content">
+                    <h4>Nắm chắc lý thuyết</h4>
+                    <p>Đọc và thảo luận 4 slide bài giảng sinh động tại <b>Không gian bài học</b>.</p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="time-num">2</div>
+                  <div class="time-content">
+                    <h4>Hệ thống từ khóa</h4>
+                    <p>Lật mở các tấm thẻ tương tác 3D để ghi nhớ nhanh các định nghĩa cốt lõi.</p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="time-num">3</div>
+                  <div class="time-content">
+                    <h4>Luyện tập toàn diện</h4>
+                    <p>Giải lần lượt 3 phần câu hỏi trắc nghiệm, đúng sai và điền số.</p>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="time-num">4</div>
+                  <div class="time-content">
+                    <h4>Theo dõi tiến độ</h4>
+                    <p>Bảng báo cáo này giúp phát hiện ra các lỗ hổng kiến thức để kịp thời ôn tập lại.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 10px;">
+            <button class="btn-reset-report" onclick="resetAllPractice()">🔄 Đặt lại kết quả học tập &amp; Luyện tập</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* DATA ARRAYS */
+const slideItems = [
+      {
+        title: "I. Khái Niệm & Bản Chất Quá Trình Điện Phân",
+        content: `<ul>
+          <li><b>Khái Niệm Điện Phân (Electrolysis):</b> Quá trình oxi hoá – khử xảy ra tại các điện cực dưới tác dụng của <b>dòng điện một chiều</b> đi qua dung dịch hoặc chất điện ly nóng chảy (biến <b>điện năng thành hoá năng</b>).</li>
+          <li><b>Phân Biệt Cực Trong Bình Điện Phân:</b>
+            <ul>
+              <li><b>Cathode (Cực Âm - nối cực âm nguồn):</b> Thu hút cation (<code>M<sup>n+</sup>, H<sup>+</sup></code>). Tại Cathode xảy ra <b>quá trình KHỬ</b>: <code>M<sup>n+</sup> + ne &rarr; M</code>.</li>
+              <li><b>Anode (Cực Dương - nối cực dương nguồn):</b> Thu hút anion (<code>X<sup>-</sup>, OH<sup>-</sup></code>). Tại Anode xảy ra <b>quá trình OXI HOÁ</b>: <code>2X<sup>-</sup> &rarr; X<sub>2</sub> + 2e</code>.</li>
+            </ul>
+          </li>
+          <li><b>So Sánh Pin Điện & Bình Điện Phân:</b>
+            <ul>
+              <li><i>Pin điện hoá:</i> Hoá năng &rarr; Điện năng (Anode là cực âm, Cathode là cực dương).</li>
+              <li><i>Bình điện phân:</i> Điện năng &rarr; Hoá năng (Anode là cực dương, Cathode là cực âm).</li>
+            </ul>
+          </li>
+        </ul>`
+      },
+      {
+        title: "II. Điện Phân Hợp Chất Nóng Chảy (Molten Salt Electrolysis)",
+        content: `<ul>
+          <li><b>Ứng Dụng:</b> Điều chế các kim loại mạnh (K, Na, Ca, Mg, Al) mà dung dịch muối của chúng không thể bị khử bởi nước trong dung dịch.</li>
+          <li><b>Điện Phân NaCl Nóng Chảy (Điều chế Sodium):</b>
+            <ul>
+              <li>Cathode (-): <code>2Na<sup>+</sup> + 2e &rarr; 2Na</code> (Thu được kim loại Na lỏng)</li>
+              <li>Anode (+): <code>2Cl<sup>-</sup> &rarr; Cl<sub>2</sub> + 2e</code> (Thu được khí Cl<sub>2</sub>)</li>
+              <li>Phương trình tổng quát: <code>2NaCl &rarr; 2Na + Cl<sub>2</sub></code> (ĐPNC)</li>
+            </ul>
+          </li>
+          <li><b>Sản Xuất Nhôm Trong Công Nghiệp (ĐPNC Al<sub>2</sub>O<sub>3</sub>):</b>
+            <ul>
+              <li>Hoà tan Al<sub>2</sub>O<sub>3</sub> trong <b>cryolite (Na<sub>3</sub>AlF<sub>6</sub>)</b> nóng chảy để hạ nhiệt độ nóng chảy từ 2050 &deg;C xuống 900 &deg;C, tăng độ dẫn điện và tiết kiệm năng lượng.</li>
+              <li>Phương trình: <code>2Al<sub>2</sub>O<sub>3</sub> &rarr; 4Al + 3O<sub>2</sub></code> (ĐPNC, xúc tác cryolite)</li>
+            </ul>
+          </li>
+        </ul>`
+      },
+      {
+        title: "III. Điện Phân Dung Dịch & Quy Tắc Phóng Điện Tại Điện Cực",
+        content: `<ul>
+          <li><b>Quy Tắc Tại Cathode (Cực Âm):</b>
+            <ul>
+              <li>Cation kim loại trung bình/yếu (Cu<sup>2+</sup>, Ag<sup>+</sup>...) bị khử trước H<sub>2</sub>O: <code>Cu<sup>2+</sup> + 2e &rarr; Cu</code>.</li>
+              <li>Cation kim loại mạnh (K<sup>+</sup>, Na<sup>2+</sup>, Mg<sup>2+</sup>, Al<sup>3+</sup>) <b>KHÔNG bị khử</b>; thay vào đó H<sub>2</sub>O bị khử giải phóng khí H<sub>2</sub>: <code>2H<sub>2</sub>O + 2e &rarr; H<sub>2</sub> + 2OH<sup>-</sup></code> (môi trường kiềm).</li>
+            </ul>
+          </li>
+          <li><b>Quy Tắc Tại Anode (Cực Dương):</b>
+            <ul>
+              <li>Anion không chứa oxygen (Cl<sup>-</sup>, Br<sup>-</sup>, I<sup>-</sup>...) bị oxi hoá trước H<sub>2</sub>O: <code>2Cl<sup>-</sup> &rarr; Cl<sub>2</sub> + 2e</code>.</li>
+              <li>Anion chứa oxygen (SO<sub>4</sub><sup>2-</sup>, NO<sub>3</sub><sup>-</sup>...) <b>KHÔNG bị oxi hoá</b>; thay vào đó H<sub>2</sub>O bị oxi hoá giải phóng khí O<sub>2</sub>: <code>2H<sub>2</sub>O &rarr; O<sub>2</sub> + 4H<sup>+</sup> + 4e</code> (môi trường acid).</li>
+            </ul>
+          </li>
+          <li><b>Thí Nghiệm ĐP DD CuSO<sub>4</sub> & ĐP DD NaCl có màng ngăn:</b>
+            <ul>
+              <li><code>2CuSO<sub>4</sub> + 2H<sub>2</sub>O &rarr; 2Cu + O<sub>2</sub> + 2H<sub>2</sub>SO<sub>4</sub></code> (ĐP DD)</li>
+              <li><code>2NaCl + 2H<sub>2</sub>O &rarr; 2NaOH + H<sub>2</sub> + Cl<sub>2</sub></code> (ĐP DD, màng ngăn xốp).</li>
+            </ul>
+          </li>
+        </ul>`
+      },
+      {
+        title: "IV. Định Luật Faraday & Ứng Dụng Trong Thực Tế",
+        content: `<ul>
+          <li><b>Định Luật Faraday Tính Khối Lượng Chất Giải Phóng (m):</b><br>
+          <code>m = (A &middot; I &middot; t) / (F &middot; n)</code><br>
+          Trong đó: m là khối lượng chất giải phóng (g); A là khối lượng mol nguyên tử (g/mol); I là cường độ dòng điện (A); t là thời gian điện phân (giây, s); F = 96500 C/mol là hằng số Faraday; n là số electron trao đổi.</li>
+          <li><b>Số Mol Electron Lọt Qua Điện Cực (n<sub>e</sub>):</b> <code>n<sub>e</sub> = (I &middot; t) / F</code>.</li>
+          <li><b>Ứng Dụng Công Nghiệp Tiêu Biểu:</b>
+            <ul>
+              <li><b>Điều chế kim loại:</b> Nhôm, sút, clo, kim loại kiềm/kiềm thổ.</li>
+              <li><b>Tinh chế kim loại:</b> Tinh chế đồng (99,99%) làm dây dẫn điện. Anode là đồng thô, Cathode là đồng tinh khiết.</li>
+              <li><b>Mạ điện (Electroplating):</b> Mạ vàng, bạc, nickel, chromium bảo vệ kim loại chống ăn mòn và tăng tính thẩm mỹ. Vật cần mạ làm Cathode.</li>
+            </ul>
+          </li>
+        </ul>`
+      }
+    ];
+
+const part1Questions = [
+      {
+        q: "Điện phân là quá trình oxi hoá – khử xảy ra tại các điện cực dưới tác dụng của",
+        opts: ["dòng điện một chiều", "dòng điện xoay chiều", "nhiệt độ cao", "ánh sáng mặt trời"],
+        ans: 0
+      },
+      {
+        q: "Trong bình điện phân, tại cực âm (Cathode) xảy ra quá trình nào sau đây?",
+        opts: ["Quá trình oxi hoá", "Quá trình khử", "Phản ứng phân huỷ", "Phản ứng trao đổi"],
+        ans: 1
+      },
+      {
+        q: "Trong bình điện phân, cực dương (Anode) thu hút các loại ion nào?",
+        opts: ["Cation kim loại", "Ion H<sup>+</sup>", "Anion (ion âm)", "Cation ammonium"],
+        ans: 2
+      },
+      {
+        q: "Chất nào sau đây có thể điều chế bằng phương pháp điện phân nóng chảy?",
+        opts: ["Cu", "Ag", "Na", "Fe"],
+        ans: 2
+      },
+      {
+        q: "Phương pháp điện phân nóng chảy Al<sub>2</sub>O<sub>3</sub> sản xuất nhôm trong công nghiệp dùng chất nào sau đây làm xúc tác hạ nhiệt độ chảy?",
+        opts: ["Thạch cao (CaSO<sub>4</sub>)", "Cryolite (Na<sub>3</sub>AlF<sub>6</sub>)", "Đá vôi (CaCO<sub>3</sub>)", "Muối ăn (NaCl)"],
+        ans: 1
+      },
+      {
+        q: "Khi điện phân NaCl nóng chảy, sản phẩm thu được tại cực dương (Anode) là",
+        opts: ["Khí H<sub>2</sub>", "Kim loại Na", "Khí Cl<sub>2</sub>", "Khí O<sub>2</sub>"],
+        ans: 2
+      },
+      {
+        q: "Cation kim loại nào sau đây KHÔNG bị khử khi điện phân dung dịch ở điện cực?",
+        opts: ["Cu<sup>2+</sup>", "Ag<sup>+</sup>", "Fe<sup>2+</sup>", "Na<sup>+</sup>"],
+        ans: 3
+      },
+      {
+        q: "Khi điện phân dung dịch CuSO<sub>4</sub> với điện cực trơ (Pt), tại cực âm (Cathode) xảy ra quá trình nào?",
+        opts: ["2H<sub>2</sub>O &rarr; O<sub>2</sub> + 4H<sup>+</sup> + 4e", "Cu<sup>2+</sup> + 2e &rarr; Cu", "2H<sub>2</sub>O + 2e &rarr; H<sub>2</sub> + 2OH<sup>-</sup>", "Cu &rarr; Cu<sup>2+</sup> + 2e"],
+        ans: 1
+      },
+      {
+        q: "Khi điện phân dung dịch CuSO<sub>4</sub> với điện cực trơ, khí thoát ra tại cực dương (Anode) là",
+        opts: ["Khí H<sub>2</sub>", "Khí SO<sub>2</sub>", "Khí O<sub>2</sub>", "Khí Cl<sub>2</sub>"],
+        ans: 2
+      },
+      {
+        q: "Điện phân dung dịch NaCl có màng ngăn xốp thu được các sản phẩm là",
+        opts: ["Na và Cl<sub>2</sub>", "NaOH, H<sub>2</sub> và Cl<sub>2</sub>", "NaClO và H<sub>2</sub>", "NaOH và O<sub>2</sub>"],
+        ans: 1
+      },
+      {
+        q: "Anion nào sau đây KHÔNG bị oxi hoá khi điện phân dung dịch tại Anode trơ?",
+        opts: ["Cl<sup>-</sup>", "Br<sup>-</sup>", "SO<sub>4</sub><sup>2-</sup>", "I<sup>-</sup>"],
+        ans: 2
+      },
+      {
+        q: "Biểu thức đúng của định luật Faraday tính khối lượng chất m giải phóng tại điện cực là",
+        opts: ["m = (A &middot; I &middot; t) / (F &middot; n)", "m = (F &middot; I &middot; t) / (A &middot; n)", "m = (A &middot; F &middot; t) / (I &middot; n)", "m = (n &middot; I &middot; t) / (F &middot; A)"],
+        ans: 0
+      },
+      {
+        q: "Hằng số Faraday F trong định luật Faraday có giá trị bằng bao nhiêu?",
+        opts: ["22,4", "96500 C/mol", "8,314", "6,022 &times; 10<sup>23</sup>"],
+        ans: 1
+      },
+      {
+        q: "Trong kĩ thuật mạ điện (ví dụ mạ vàng cho vật kim loại), vật cần mạ được nối vào điện cực nào?",
+        opts: ["Cực dương (Anode)", "Cực âm (Cathode)", "Cầu muối", "Màng ngăn"],
+        ans: 1
+      },
+      {
+        q: "Khi tinh chế đồng bằng phương pháp điện phân, cực dương (Anode) làm bằng chất liệu gì?",
+        opts: ["Đồng tinh khiết", "Đồng thô (chứa tạp chất)", "Bạch kim (Pt)", "Than chì (C)"],
+        ans: 1
+      },
+      {
+        q: "Điện phân dung dịch AgNO<sub>3</sub> với Anode trơ thu được chất bám vào Cathode là",
+        opts: ["Khí H<sub>2</sub>", "Kim loại Ag", "Khí NO<sub>2</sub>", "Khí O<sub>2</sub>"],
+        ans: 1
+      },
+      {
+        q: "Số mol electron (n<sub>e</sub>) chuyển dời qua điện cực trong thời gian t giây được tính theo công thức",
+        opts: ["n<sub>e</sub> = (I &middot; t) / F", "n<sub>e</sub> = (F &middot; t) / I", "n<sub>e</sub> = (I &middot; F) / t", "n<sub>e</sub> = I &middot; t &middot; F"],
+        ans: 0
+      },
+      {
+        q: "Khi điện phân dung dịch NaCl KHÔNG có màng ngăn xốp ở nhiệt độ phòng, sản phẩm thu được trong bình điện phân là",
+        opts: ["Dung dịch NaClO (Nước Javel) và khí H<sub>2</sub>", "Dung dịch NaOH và khí Cl<sub>2</sub>", "Kim loại Na và khí Cl<sub>2</sub>", "Dung dịch HCl và O<sub>2</sub>"],
+        ans: 0
+      }
+    ];
+
+const part2Questions = [
+      {
+        ctx: "<b>Điện phân dung dịch CuSO<sub>4</sub>:</b> Tiến hành điện phân 200 mL dung dịch CuSO<sub>4</sub> 1M với các điện cực trơ (Pt) và cường độ dòng điện không đổi I = 5A.",
+        items: [
+          { t: "a) Tại Cathode (cực âm), ion Cu²⁺ bị khử trước H₂O tạo kim loại Cu bám vào điện cực.", ans: true },
+          { t: "b) Tại Anode (cực dương), ion SO₄²⁻ bị oxi hoá giải phóng khí SO₂.", ans: false },
+          { t: "c) Dung dịch sau điện phân hoàn toàn có chứa H₂SO₄ làm quỳ tím hoá đỏ.", ans: true },
+          { t: "d) Khối lượng Cu bám vào Cathode tối đa thu được là 12,8 gram.", ans: true }
+        ]
+      },
+      {
+        ctx: "<b>Điện phân dung dịch NaCl:</b> Điện phân dung dịch NaCl bão hoà bằng dòng điện một chiều với các điện cực trơ có màng ngăn xốp phân chia hai ngăn điện cực.",
+        items: [
+          { t: "a) Tại Cathode (-), ion Na⁺ bị khử tạo ra kim loại Na.", ans: false },
+          { t: "b) Tại Anode (+), ion Cl⁻ bị oxi hoá giải phóng khí Cl₂ có màu vàng lục.", ans: true },
+          { t: "c) Dung dịch thu được ở ngăn Cathode có chứa NaOH làm phenolphthalein hoá hồng.", ans: true },
+          { t: "d) Nếu tháo bỏ màng ngăn xốp, khí Cl₂ sinh ra ở Anode sẽ tác dụng với NaOH ở Cathode tạo dung dịch nước Javel.", ans: true }
+        ]
+      },
+      {
+        ctx: "<b>Sản xuất nhôm và mạ điện:</b> Trong công nghiệp, nhôm được sản xuất bằng phương pháp điện phân nóng chảy Al₂O₃, còn kĩ thuật mạ điện giúp bảo vệ bề mặt kim loại.",
+        items: [
+          { t: "a) Cryolite Na₃AlF₆ đóng vai trò hạ nhiệt độ chảy của Al₂O₃ và tăng độ dẫn điện.", ans: true },
+          { t: "b) Muốn mạ niken cho một chiếc thìa sắt, chiếc thìa sắt được gắn vào Anode (cực dương).", ans: false },
+          { t: "c) Điện phân Al₂O₃ nóng chảy thu được kim loại Al ở Cathode và khí O₂ ở Anode.", ans: true },
+          { t: "d) Khí O₂ sinh ra ở Anode nóng đỏ ăn mòn dần các thanh than chì (C) làm sinh ra CO và CO₂.", ans: true }
+        ]
+      },
+      {
+        ctx: "<b>Điện phân dung dịch hỗn hợp:</b> Điện phân dung dịch chứa đồng thời CuSO<sub>4</sub> và NaCl với điện cực trơ.",
+        items: [
+          { t: "a) Ion Cu²⁺ bị khử tại Cathode trước ion Na⁺.", ans: true },
+          { t: "b) Ion Cl⁻ bị oxi hoá tại Anode trước H₂O.", ans: true },
+          { t: "c) Cation Na⁺ và anion SO₄²⁻ lần lượt bị phóng điện tại các điện cực.", ans: false },
+          { t: "d) Khí Cl₂ thoát ra ở Anode trước khí O₂.", ans: true }
+        ]
+      }
+    ];
+
+const part3Questions = [
+      {
+        ctx: "Điện phân dung dịch CuSO₄ thu được 6,4 gram kim loại Cu bám vào Cathode (cho A_Cu = 64 g/mol).",
+        q: "Số mol electron (mol) đã lọt qua dây dẫn điện cực để giải phóng 6,4 g Cu là bao nhiêu?",
+        ans: "0.2"
+      },
+      {
+        ctx: "Trong quá trình sản xuất nhôm bằng điện phân nóng chảy Al₂O₃, người ta thu được 54 kg nhôm kim loại (A_Al = 27).",
+        q: "Số kilonol (kmol) electron lọt qua các điện cực là bao nhiêu?",
+        ans: "6"
+      },
+      {
+        ctx: "Điện phân dung dịch chứa 0,1 mol CuSO₄ và 0,1 mol NaCl với điện cực trơ cho đến khi ion Cu²⁺ vừa bị khử hết.",
+        q: "Số mol khí Cl₂ (mol) thu được duy nhất tại Anode là bao nhiêu?",
+        ans: "0.05"
+      },
+      {
+        ctx: "Điện phân nóng chảy muối chloride của kim loại M thu được 4,6 gram kim loại M ở Cathode và 2,479 lít khí Cl₂ (đkc, tương ứng 0,1 mol) ở Anode.",
+        q: "Khối lượng mol nguyên tử A của kim loại M (g/mol) bằng bao nhiêu (biết M là kim loại kiềm nhóm IA)?",
+        ans: "23"
+      },
+      {
+        ctx: "Cho các ion trong dung dịch: Cu²⁺, Na⁺, Ag⁺, Mg²⁺, Al³⁺, Fe²⁺.",
+        q: "Có bao nhiêu cation kim loại bị khử tại Cathode khi điện phân dung dịch?",
+        ans: "3"
+      },
+      {
+        ctx: "Cho cường độ dòng điện I = 9,65 A điện phân dung dịch CuSO₄ trong thời gian t = 2000 giây.",
+        q: "Tính số mol electron (mol) lọt qua mạch điện (làm tròn đến 2 chữ số thập phân).",
+        ans: "0.2"
+      }
+    ];
+
+    /* SOUND SYNTHESIZER */
+    let soundEnabled = true;
+    function playChime(isCorrect) {
+      if(!soundEnabled) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+        
+        if(isCorrect) {
+          // Success sound: G4 -> C5
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const gain = ctx.createGain();
+          
+          osc1.type = 'sine';
+          osc2.type = 'triangle';
+          
+          osc1.frequency.setValueAtTime(392.00, ctx.currentTime); // G4
+          osc2.frequency.setValueAtTime(392.00 * 1.005, ctx.currentTime);
+          osc1.frequency.setValueAtTime(523.25, ctx.currentTime + 0.12); // C5
+          osc2.frequency.setValueAtTime(523.25 * 1.005, ctx.currentTime + 0.12);
+          
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+          
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc1.start();
+          osc2.start();
+          osc1.stop(ctx.currentTime + 0.4);
+          osc2.stop(ctx.currentTime + 0.4);
+        } else {
+          // Wrong sound: Eb3 -> Bb2
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(155.56, ctx.currentTime); // Eb3
+          osc.frequency.linearRampToValueAtTime(116.54, ctx.currentTime + 0.25); // Bb2
+          
+          // low pass filter to make it warmer
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(300, ctx.currentTime);
+          
+          gain.gain.setValueAtTime(0.15, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+          
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.start();
+          osc.stop(ctx.currentTime + 0.35);
+        }
+      } catch(e) {
+        console.log("Web Audio not supported or blocked");
+      }
+    }
+
+    /* GLOBAL APP STATE */
+    let currentPart = 1;
+    let currentQuestionIdx = 0;
+    let currentSlideIdx = 0;
+
+    let userAnswersP1 = Array(18).fill(null);
+    let userAnswersP2 = Array(4).fill(null).map(() => [null, null, null, null]);
+    let userAnswersP3 = Array(6).fill("");
+
+    /* NAV CONTROLLER */
+    function switchNav(viewId) {
+      document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      // Automatically collapse/expand practice submenu based on current view
+      const sub = document.getElementById('practiceSub');
+      if (viewId === 'practice') {
+        if (sub) sub.style.display = 'flex';
+      } else {
+        if (sub) sub.style.display = 'none';
+      }
+
+      if(viewId === 'home') {
+        document.getElementById('viewHome').classList.add('active');
+        document.querySelectorAll('.nav-item')[0].classList.add('active');
+      } else if(viewId === 'slides') {
+        document.getElementById('viewSlides').classList.add('active');
+        document.querySelectorAll('.nav-item')[1].classList.add('active');
+        renderSlide();
+      } else if(viewId === 'keywords') {
+        document.getElementById('viewKeywords').classList.add('active');
+        document.querySelectorAll('.nav-item')[2].classList.add('active');
+      } else if(viewId === 'practice') {
+        document.getElementById('viewPractice').classList.add('active');
+        document.querySelectorAll('.nav-item')[3].classList.add('active');
+        renderPracticeUI();
+      } else if(viewId === 'wheel') {
+        document.getElementById('viewWheel').classList.add('active');
+        document.querySelectorAll('.nav-item')[4].classList.add('active');
+        drawWheel();
+      } else if(viewId === 'report') {
+        document.getElementById('viewReport').classList.add('active');
+        document.querySelectorAll('.nav-item')[5].classList.add('active');
+        renderReport();
+      }
+    }
+
+    function togglePracticeNav() {
+      const sub = document.getElementById('practiceSub');
+      if (sub) {
+        if (sub.style.display === 'flex') {
+          sub.style.display = 'none';
+          switchNav('home');
+        } else {
+          sub.style.display = 'flex';
+          switchNav('practice');
+        }
+      }
+    }
+
+    /* SLIDE CONTROLLER */
+    function renderSlide() {
+      const s = slideItems[currentSlideIdx];
+      document.getElementById('slideCounterText').innerText = `Slide ${currentSlideIdx + 1} / ${slideItems.length}`;
+      document.getElementById('slideProgress').style.width = `${((currentSlideIdx + 1) / slideItems.length) * 100}%`;
+      document.getElementById('slideBody').innerHTML = `<h2>${s.title}</h2>${s.content}`;
+    }
+
+    function changeSlide(dir) {
+      currentSlideIdx = Math.max(0, Math.min(slideItems.length - 1, currentSlideIdx + dir));
+      renderSlide();
+    }
+
+    /* FLIP CARD CONTROLLER */
+    function flipThisCard(card) {
+      card.classList.toggle('flipped');
+    }
+
+    function toggleFlipAll() {
+      const cards = document.querySelectorAll('.flip-card');
+      const anyUnflipped = Array.from(cards).some(c => !c.classList.contains('flipped'));
+      cards.forEach(c => {
+        if(anyUnflipped) c.classList.add('flipped');
+        else c.classList.remove('flipped');
+      });
+    }
+
+    /* SIDEBAR GRID BUILDER */
+    function initSidebarGrid() {
+      const g1 = document.getElementById('gridPart1');
+      g1.innerHTML = '';
+      for(let i=0; i<18; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'q-btn' + (i === 0 ? ' active' : '');
+        btn.id = `btn_p1_${i}`;
+        btn.innerText = i + 1;
+        btn.onclick = () => { selectPart(1); currentQuestionIdx = i; switchNav('practice'); };
+        g1.appendChild(btn);
+      }
+
+      const g2 = document.getElementById('gridPart2');
+      g2.innerHTML = '';
+      for(let i=0; i<4; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'q-btn';
+        btn.id = `btn_p2_${i}`;
+        btn.innerText = i + 1;
+        btn.onclick = () => { selectPart(2); currentQuestionIdx = i; switchNav('practice'); };
+        g2.appendChild(btn);
+      }
+
+      const g3 = document.getElementById('gridPart3');
+      g3.innerHTML = '';
+      for(let i=0; i<6; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'q-btn';
+        btn.id = `btn_p3_${i}`;
+        btn.innerText = i + 1;
+        btn.onclick = () => { selectPart(3); currentQuestionIdx = i; switchNav('practice'); };
+        g3.appendChild(btn);
+      }
+    }
+
+    function selectPart(partNum) {
+      currentPart = partNum;
+      currentQuestionIdx = 0;
+      document.getElementById('part1Head').classList.toggle('active', partNum === 1);
+      document.getElementById('part2Head').classList.toggle('active', partNum === 2);
+      document.getElementById('part3Head').classList.toggle('active', partNum === 3);
+
+      document.getElementById('gridPart1').style.display = partNum === 1 ? 'grid' : 'none';
+      document.getElementById('gridPart2').style.display = partNum === 2 ? 'grid' : 'none';
+      document.getElementById('gridPart3').style.display = partNum === 3 ? 'grid' : 'none';
+
+      switchNav('practice');
+    }
+
+    /* PRACTICE INTERFACE RENDERER */
+    function renderPracticeUI() {
+      // Highlight correct sidebar button
+      document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`btn_p${currentPart}_${currentQuestionIdx}`);
+      if(activeBtn) activeBtn.classList.add('active');
+
+      const body = document.getElementById('quizMainBody');
+      const topTitle = document.getElementById('quizPartTitle');
+      const topInd = document.getElementById('quizIndexIndicator');
+
+      if(currentPart === 1) {
+        topTitle.innerText = "Phần I - Trắc nghiệm 4 lựa chọn";
+        topInd.innerText = `Câu ${currentQuestionIdx + 1} / 18`;
+        const item = part1Questions[currentQuestionIdx];
+        const selected = userAnswersP1[currentQuestionIdx];
+
+        let html = `<div class="q-title">Câu ${currentQuestionIdx + 1}: ${item.q}</div>`;
+        html += `<div class="grid-2x2">`;
+        const letters = ['A', 'B', 'C', 'D'];
+        item.opts.forEach((opt, idx) => {
+          let extraClass = "";
+          if(selected !== null) {
+            if(idx === item.ans) extraClass = "correct";
+            else if(idx === selected) extraClass = "wrong";
+          }
+          html += `
+            <div class="opt-card ${extraClass}" onclick="chooseP1Option(${idx})">
+              <div class="opt-badge">${letters[idx]}</div>
+              <div class="opt-text">${opt}</div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+        
+        body.innerHTML = html;
+
+      } else if(currentPart === 2) {
+        topTitle.innerText = "Phần II - Trắc nghiệm Đúng / Sai";
+        topInd.innerText = `Câu ${currentQuestionIdx + 1} / 4`;
+        const item = part2Questions[currentQuestionIdx];
+        const answers = userAnswersP2[currentQuestionIdx];
+
+        let html = `<div class="context-box">${item.ctx}</div>`;
+        html += `<div class="tf-table">`;
+        item.items.forEach((sub, sIdx) => {
+          const userVal = answers[sIdx];
+          let dClass = "", sClass = "";
+          if(userVal !== null) {
+            if(userVal === true) {
+              dClass = sub.ans === true ? "active-correct" : "active-wrong";
+            } else if(userVal === false) {
+              sClass = sub.ans === false ? "active-correct" : "active-wrong";
+            }
+          }
+          html += `
+            <div class="tf-row">
+              <div class="tf-text">${sub.t}</div>
+              <div class="tf-actions">
+                <button class="btn-tf ${dClass}" onclick="chooseP2Option(${sIdx}, true)">Đúng</button>
+                <button class="btn-tf ${sClass}" onclick="chooseP2Option(${sIdx}, false)">Sai</button>
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+        
+        body.innerHTML = html;
+
+      } else if(currentPart === 3) {
+        topTitle.innerText = "Phần III - Trả lời ngắn";
+        topInd.innerText = `Câu ${currentQuestionIdx + 1} / 6`;
+        const item = part3Questions[currentQuestionIdx];
+        const val = userAnswersP3[currentQuestionIdx];
+
+        let html = `<div class="context-box">${item.ctx}</div>`;
+        html += `<div class="q-title">${item.q}</div>`;
+        html += `
+          <div class="digit-area">
+            <span class="digit-label">Trả lời:</span>
+            <div class="otp-inputs">
+              <input type="text" maxlength="1" class="digit-box" id="d1" value="${val ? val[0] || '' : ''}">
+              <input type="text" maxlength="1" class="digit-box" id="d2" value="${val ? val[1] || '' : ''}">
+              <input type="text" maxlength="1" class="digit-box" id="d3" value="${val ? val[2] || '' : ''}">
+              <input type="text" maxlength="1" class="digit-box" id="d4" value="${val ? val[3] || '' : ''}">
+            </div>
+            <button class="btn-submit-digit" onclick="submitP3Answer()">Xác nhận</button>
+          </div>
+          <div class="result-alert" id="p3Feedback"></div>
+          
+        `;
+        body.innerHTML = html;
+        setupOtpFocus();
+        
+        // Show previous feedback if any
+        if(val) {
+          const fb = document.getElementById('p3Feedback');
+          fb.style.display = 'block';
+          const entered = String(parseInt(val, 10));
+          const correctVal = item.ans;
+          if(entered === correctVal || val === correctVal) {
+            fb.innerHTML = `✅ Chính xác! Đáp số là: <b>${correctVal}</b>`;
+            fb.style.color = "var(--success)";
+          } else {
+            fb.innerHTML = `❌ Chưa chính xác! Vui lòng thử lại hoặc bấm "Làm lại câu này".`;
+            fb.style.color = "var(--danger)";
+          }
+        }
+      }
+    }
+
+    function setupOtpFocus() {
+      const inputs = document.querySelectorAll('.digit-box');
+      inputs.forEach((inp, idx) => {
+        inp.oninput = () => { if(inp.value && idx < inputs.length - 1) inputs[idx + 1].focus(); };
+        inp.onkeydown = (e) => { if(e.key === 'Backspace' && !inp.value && idx > 0) inputs[idx - 1].focus(); };
+      });
+    }
+
+    function chooseP1Option(idx) {
+      if(userAnswersP1[currentQuestionIdx] !== null) return;
+      userAnswersP1[currentQuestionIdx] = idx;
+      const isCorrect = idx === part1Questions[currentQuestionIdx].ans;
+      playChime(isCorrect);
+      document.getElementById(`btn_p1_${currentQuestionIdx}`).classList.add('answered');
+      renderPracticeUI();
+    }
+
+    function chooseP2Option(subIdx, val) {
+      userAnswersP2[currentQuestionIdx][subIdx] = val;
+      const isCorrect = val === part2Questions[currentQuestionIdx].items[subIdx].ans;
+      playChime(isCorrect);
+      document.getElementById(`btn_p2_${currentQuestionIdx}`).classList.add('answered');
+      renderPracticeUI();
+    }
+
+    function submitP3Answer() {
+      const d1 = document.getElementById('d1').value.trim();
+      const d2 = document.getElementById('d2').value.trim();
+      const d3 = document.getElementById('d3').value.trim();
+      const d4 = document.getElementById('d4').value.trim();
+      const rawEntered = d1 + d2 + d3 + d4;
+      if(!rawEntered) return;
+
+      const entered = String(parseInt(rawEntered, 10));
+      userAnswersP3[currentQuestionIdx] = rawEntered;
+      const correctVal = part3Questions[currentQuestionIdx].ans;
+      const fb = document.getElementById('p3Feedback');
+      fb.style.display = 'block';
+
+      if(entered === correctVal || rawEntered === correctVal) {
+        fb.innerHTML = `✅ Chính xác! Đáp số là: <b>${correctVal}</b>`;
+        fb.style.color = "var(--success)";
+        playChime(true);
+      } else {
+        fb.innerHTML = `❌ Chưa chính xác! Vui lòng thử lại hoặc bấm "Làm lại câu này".`;
+        fb.style.color = "var(--danger)";
+        playChime(false);
+      }
+      document.getElementById(`btn_p3_${currentQuestionIdx}`).classList.add('answered');
+    }
+
+    function navQuestion(step) {
+      const maxIdx = currentPart === 1 ? 18 : (currentPart === 2 ? 4 : 6);
+      const next = currentQuestionIdx + step;
+      if(next >= 0 && next < maxIdx) {
+        currentQuestionIdx = next;
+        renderPracticeUI();
+      }
+    }
+
+    function resetCurrentQuestion() {
+      if(currentPart === 1) userAnswersP1[currentQuestionIdx] = null;
+      else if(currentPart === 2) userAnswersP2[currentQuestionIdx] = [null, null, null, null];
+      else if(currentPart === 3) userAnswersP3[currentQuestionIdx] = "";
+      renderPracticeUI();
+    }
+
+    function resetAllPractice() {
+      if(confirm("Bạn có chắc chắn muốn đặt lại toàn bộ kết quả luyện tập?")) {
+        userAnswersP1 = Array(18).fill(null);
+        userAnswersP2 = Array(4).fill(null).map(() => [null, null, null, null]);
+        userAnswersP3 = Array(6).fill("");
+        document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('answered'));
+        renderPracticeUI();
+      }
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      alert(soundEnabled ? "Đã BẬT âm thanh tương tác." : "Đã TẮT âm thanh.");
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else if (document.exitFullscreen) document.exitFullscreen();
+    }
+
+    function openTeacherMode() {
+      const pin = prompt("Nhập mã bảo mật dành cho Giáo viên:");
+      if(pin === "1234") {
+        const nl = String.fromCharCode(10);
+        let msg = "=== ĐÁP ÁN GIÁO VIÊN BÀI 1: ESTER – LIPID ===" + nl + nl;
+        msg += "Phần I (18 câu): " + part1Questions.map((q, i) => `${i+1}:${['A','B','C','D'][q.ans]}`).join(', ') + nl + nl;
+        msg += "Phần II (4 câu):" + nl + part2Questions.map((q, i) => `C${i+1}: ` + q.items.map(it => (it.ans ? "Đ" : "S")).join('-')).join(nl) + nl + nl;
+        msg += "Phần III (6 câu): " + part3Questions.map((q, i) => `C${i+1}: ${q.ans}`).join(', ');
+        alert(msg);
+      } else if(pin !== null) {
+        alert("Mã bảo mật không chính xác!");
+      }
+    }
+
+
+    /* WHEEL VARIABLES & LOGIC */
+    let wheelSegments = [
+      "Nguyễn Văn A",
+      "Trần Thị B",
+      "Lê Văn C",
+      "Phạm Văn D",
+      "Vũ Thị E",
+      "Ngô Văn F",
+      "Đỗ Thị G",
+      "Hoàng Văn H",
+      "Bùi Thị I",
+      "Phan Văn K"
+    ];
+    let startAngle = 0;
+    let arc = Math.PI / (wheelSegments.length / 2);
+    let spinTimeout = null;
+    let spinAngleStart = 10;
+    let spinTime = 0;
+    let spinTimeTotal = 0;
+    let isSpinning = false;
+
+    function drawWheel() {
+      const canvas = document.getElementById("wheelCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const numSegments = wheelSegments.length;
+      arc = Math.PI / (numSegments / 2);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = Math.min(centerX, centerY) - 15;
+
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+      ctx.shadowBlur = 15;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 6;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius + 8, 0, 2 * Math.PI);
+      ctx.fillStyle = '#4F46E5';
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+
+      const colors = [
+        "#2DD4BF", // Teal
+        "#3B82F6", // Sky Blue
+        "#818CF8", // Indigo
+        "#FBBF24", // Warm Yellow
+        "#F472B6", // Light Pink
+        "#F97316", // Orange
+        "#EC4899", // Magenta Pink
+        "#38BDF8", // Cyan
+        "#FDE047", // Bright Yellow
+        "#10B981"  // Green
+      ];
+
+      for (let i = 0; i < numSegments; i++) {
+        const angle = startAngle + i * arc;
+        ctx.fillStyle = colors[i % colors.length];
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, angle, angle + arc, false);
+        ctx.lineTo(centerX, centerY);
+        ctx.fill();
+
+        ctx.save();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle));
+        ctx.stroke();
+
+        ctx.fillStyle = "#1E293B";
+        ctx.translate(centerX + Math.cos(angle + arc / 2) * (radius * 0.55), centerY + Math.sin(angle + arc / 2) * (radius * 0.55));
+        ctx.rotate(angle + arc / 2 + Math.PI / 2);
+        
+        ctx.font = "bold 13px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        let text = wheelSegments[i];
+        if (text.length > 18) text = text.substring(0, 16) + "...";
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+      }
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 38, 0, 2 * Math.PI);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.12)';
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+    }
+
+    function spinWheel() {
+      if (isSpinning) return;
+      if (!updateWheelList(true)) {
+        return;
+      }
+      isSpinning = true;
+      document.getElementById("btnSpin").disabled = true;
+      const bsr = document.getElementById("btnSpinRight");
+      if(bsr) bsr.disabled = true;
+
+      document.getElementById("wheelResult").innerText = "🎰 Đang quay...";
+      document.getElementById("wheelResult").className = "wheel-result spinning";
+
+      spinAngleStart = Math.random() * 10 + 15;
+      spinTime = 0;
+      spinTimeTotal = Math.random() * 3000 + 4000;
+      setTimeout(rotateWheelTimer, 30);
+    }
+
+    function rotateWheelTimer() {
+      spinTime += 30;
+      if (spinTime >= spinTimeTotal) {
+        stopRotateWheel();
+        return;
+      }
+      const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+      startAngle += (spinAngle * Math.PI / 180);
+      drawWheel();
+      setTimeout(rotateWheelTimer, 30);
+    }
+
+    function stopRotateWheel() {
+      isSpinning = false;
+      document.getElementById("btnSpin").disabled = false;
+      const bsr = document.getElementById("btnSpinRight");
+      if(bsr) bsr.disabled = false;
+
+      const numSegments = wheelSegments.length;
+      let degrees = startAngle * 180 / Math.PI + 90;
+      let arcd = arc * 180 / Math.PI;
+      let index = Math.floor((360 - (degrees % 360)) / arcd);
+      index = (index + numSegments) % numSegments;
+
+      const result = wheelSegments[index];
+      const resDiv = document.getElementById("wheelResult");
+      resDiv.innerHTML = `🎉 Kết quả: <b>${result}</b>`;
+      resDiv.className = "wheel-result stopped";
+      playChime(true);
+    }
+
+    function easeOut(t, b, c, d) {
+      const ts = (t /= d) * t;
+      const tc = ts * t;
+      return b + c * (tc + -3 * ts + 3 * t);
+    }
+
+    function loadDefaultRewards() {
+      const def = [
+        "Nguyễn Văn A",
+        "Trần Thị B",
+        "Lê Văn C",
+        "Phạm Văn D",
+        "Vũ Thị E",
+        "Ngô Văn F",
+        "Đỗ Thị G",
+        "Hoàng Văn H",
+        "Bùi Thị I",
+        "Phan Văn K"
+      ];
+      document.getElementById("wheelInput").value = def.join("\n");
+      updateWheelList();
+    }
+
+    function updateWheelList(isSilent = false) {
+      const txt = document.getElementById("wheelInput").value.trim();
+      if (!txt) {
+        if (!isSilent) alert("Vui lòng nhập danh sách ít nhất 2 mục!");
+        return false;
+      }
+      const lines = txt.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length < 2) {
+        if (!isSilent) alert("Danh sách phải chứa từ 2 dòng trở lên!");
+        return false;
+      }
+      wheelSegments = lines;
+      startAngle = 0;
+      arc = Math.PI / (wheelSegments.length / 2);
+      drawWheel();
+      document.getElementById("wheelResult").innerText = "Đã cập nhật danh sách mới!";
+      document.getElementById("wheelResult").className = "wheel-result";
+      return true;
+    }
+
+    /* REPORTING SYSTEM LOGIC */
+    function renderReport() {
+      let correct = 0;
+      let wrong = 0;
+      let unanswered = 0;
+
+      let completedP1 = 0;
+      let p1Html = "";
+      for (let i = 0; i < 18; i++) {
+        const ans = userAnswersP1[i];
+        let statusClass = "unanswered";
+        let icon = "⏳";
+        if (ans !== null) {
+          completedP1++;
+          if (ans === part1Questions[i].ans) {
+            correct++;
+            statusClass = "correct";
+            icon = "✅";
+          } else {
+            wrong++;
+            statusClass = "wrong";
+            icon = "❌";
+          }
+        } else {
+          unanswered++;
+        }
+        p1Html += `<div class="rep-item-card ${statusClass}" onclick="selectPart(1); currentQuestionIdx=${i}; switchNav('practice');">
+                    <span class="rep-item-num">${i + 1}</span>
+                    <span class="rep-item-status">${icon}</span>
+                  </div>`;
+      }
+      document.getElementById("scoreP1").innerText = `${completedP1}/18 câu đã làm`;
+      document.getElementById("gridRepP1").innerHTML = p1Html;
+
+      let completedP2 = 0;
+      let p2CorrectSub = 0;
+      let p2Html = "";
+      for (let i = 0; i < 4; i++) {
+        const answers = userAnswersP2[i];
+        const item = part2Questions[i];
+        let subDoneCount = 0;
+        
+        let subHtml = "";
+        for (let j = 0; j < 4; j++) {
+          const userAns = answers[j];
+          let subStatus = "unanswered";
+          let subIcon = "⏳";
+          if (userAns !== null) {
+            subDoneCount++;
+            if (userAns === item.items[j].ans) {
+              correct++;
+              p2CorrectSub++;
+              subStatus = "correct";
+              subIcon = "✅";
+            } else {
+              wrong++;
+              subStatus = "wrong";
+              subIcon = "❌";
+            }
+          } else {
+            unanswered++;
+          }
+          subHtml += `<span class="rep-sub-dot ${subStatus}" title="Mệnh đề ${String.fromCharCode(97 + j)}">${String.fromCharCode(97 + j).toUpperCase()}: ${subIcon}</span>`;
+        }
+
+        if (subDoneCount > 0) completedP2++;
+        p2Html += `
+          <div class="rep-row-tf" onclick="selectPart(2); currentQuestionIdx=${i}; switchNav('practice');">
+            <span class="rep-row-title">Câu ${i + 1}</span>
+            <div class="rep-row-dots">${subHtml}</div>
+          </div>
+        `;
+      }
+      document.getElementById("scoreP2").innerText = `${p2CorrectSub}/16 mệnh đề đúng`;
+      document.getElementById("gridRepP2").innerHTML = p2Html;
+
+      let completedP3 = 0;
+      let p3Html = "";
+      for (let i = 0; i < 6; i++) {
+        const val = userAnswersP3[i];
+        let statusClass = "unanswered";
+        let icon = "⏳";
+        if (val) {
+          completedP3++;
+          const parsedEntered = String(parseInt(val, 10));
+          const correctVal = part3Questions[i].ans;
+          if (parsedEntered === correctVal || val === correctVal) {
+            correct++;
+            statusClass = "correct";
+            icon = "✅";
+          } else {
+            wrong++;
+            statusClass = "wrong";
+            icon = "❌";
+          }
+        } else {
+          unanswered++;
+        }
+        p3Html += `<div class="rep-item-card ${statusClass}" onclick="selectPart(3); currentQuestionIdx=${i}; switchNav('practice');">
+                    <span class="rep-item-num">${i + 1}</span>
+                    <span class="rep-item-status">${icon}</span>
+                  </div>`;
+      }
+      document.getElementById("scoreP3").innerText = `${completedP3}/6 câu đã làm`;
+      document.getElementById("gridRepP3").innerHTML = p3Html;
+
+      const totalTasks = 40;
+      let subDoneP2 = 0;
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          if (userAnswersP2[i][j] !== null) subDoneP2++;
+        }
+      }
+      const totalDone = completedP1 + subDoneP2 + completedP3;
+      const pct = Math.round((totalDone / totalTasks) * 100);
+
+      document.getElementById("reportRadialProgress").innerText = `${pct}%`;
+      document.getElementById("statCorrect").innerText = correct;
+      document.getElementById("statWrong").innerText = wrong;
+      document.getElementById("statUnanswered").innerText = unanswered;
+
+      const correctPct = totalDone > 0 ? Math.round((correct / totalDone) * 100) : 0;
+      let grade = "BẮT ĐẦU NGAY";
+      let comment = "Hãy thực hiện làm các bài luyện tập ở cột bên trái để kiểm tra năng lực và theo dõi báo cáo kết quả của mình!";
+      
+      if (totalDone > 0) {
+        if (pct < 30) {
+          grade = "KHỞI ĐỘNG";
+          comment = "Bạn đang đi những bước đầu tiên. Hãy đọc lại lý thuyết trong Slide bài giảng để tự tin vượt qua các câu hỏi nhé!";
+        } else {
+          if (correctPct >= 90) {
+            grade = "🏆 XUẤT SẮC";
+            comment = "Quá tuyệt vời! Bạn đã làm chủ hoàn toàn bài học này với tỷ lệ đúng cực cao. Sẵn sàng bứt phá điểm số cao!";
+          } else if (correctPct >= 75) {
+            grade = "🥈 KHÁ GIỎI";
+            comment = "Kết quả rất tốt! Bạn đã nắm chắc phần lớn kiến thức chương. Hãy rà soát lại các câu làm sai để đạt điểm số tuyệt đối.";
+          } else if (correctPct >= 50) {
+            grade = "🥉 TRUNG BÌNH";
+            comment = "Nỗ lực rất tốt! Bạn đã có kiến thức cơ bản. Hãy kiểm tra các câu sai và ghi nhớ kiến thức tại Hệ thống từ khóa nhé!";
+          } else {
+            grade = "💪 CẦN CỐ GẮNG";
+            comment = "Đừng nản chí! Hãy ôn tập lại lý thuyết ở phần Slide và lật thẻ từ khóa nhiều lần trước khi làm lại bài trắc nghiệm nhé!";
+          }
+        }
+      }
+
+      document.getElementById("reportGrade").innerText = grade;
+      document.getElementById("reportComment").innerText = comment;
+    }
+
+    window.onload = () => {
+      initSidebarGrid();
+      document.getElementById('wheelInput').value = wheelSegments.join('\n');
+      renderSlide();
+      renderPracticeUI();
+    };
+  </script>
+</body>
+</html>
